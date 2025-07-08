@@ -43,6 +43,7 @@ void GPIO_Manager::initialize(){
 
 /*
 Used to update the state of the GPIO pins and check for hits.
+this function should be called by an ISR (Interrupt Service Routine) 
 
 Parameters:
 - currentTime: The current time in milliseconds since epoch, used for timing checks.
@@ -51,14 +52,13 @@ Parameters:
 void GPIO_Manager::update(unsigned long currentTimeNow) {
     // Update the state of the GPIO pins
     // unsigned long currentTimeNow = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
-
+    
 }
 
 /*
 Get the pin readings for the both fencers).
 also includes time of readings
 Returns an array of pin readings index 0-3 contains red weapon readings, index 4-7 contains green weapon readings
-
 */
 int* GPIO_Manager::getFencerPinReadings() {
     // readings arrray defined in the header file

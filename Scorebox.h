@@ -44,16 +44,7 @@ private:
     bool readResetButton();
     
 public:
-    enum HitType {
-        Red_On_Target,
-        Red_Off_Target,
-        
-        Green_On_Target,
-        Green_Off_Target,
 
-        Red_Grounding_Hit,
-        Green_Grounding_Hit,
-    };
     Scorebox();
     void initialize();
     void update();

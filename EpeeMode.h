@@ -20,12 +20,24 @@ using namespace std;
 
 class EpeeMode {
 private:
+    string HitTypes[6] {"Red_On_Target","Green_On_Target", "Red_Off_Target","Green_Off_Target","Red_Grounding_Hit","Green_Grounding_Hit"};
+    int* HitValues[6] = {0, 0, 0, 0, 0, 0}; // Hit values for Red and Green fencers
     Scorebox* scorebox; // Pointer to the Scorebox for managing scores and hits
     GPIO_Manager* gpio; // Pointer to GPIO checker for reading weapon pins
-    int lockoutTime = 3000; // The time in milliseconds to lock out after a hit
-    bool isLocked = false;
-    bool redHit = false;
-    bool greenHit = false;
+    int lockoutTimer = 3000; // The time in milliseconds to lock out after a hit
+    bool isLockedOut = false; // Flag to indicate if the scorebox is locked out
+    bool lockOutTimerStarted = false; // Flag to indicate if the lockout timer has been started and is running
+    unsigned long lockoutStartTime = 0; // Timestamp when the lockout period started
+
+    // Hit state flags
+    bool redOnTarget = false;
+    bool greenOnTarget = false;
+
+    bool redOffTarget = false;
+    bool greenOffTarget = false;
+
+    bool redGrounding = false;
+    bool greenGrounding = false;
 
 public:
     EpeeMode(Scorebox* sb);
