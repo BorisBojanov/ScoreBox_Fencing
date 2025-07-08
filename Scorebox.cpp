@@ -3,27 +3,28 @@
 
 #include "Scorebox.h"
 
+// Constructor initializes the scorebox state
 Scorebox::Scorebox() : isLocked(false), redHit(false), greenHit(false), 
                        hitStartTime(0), lockoutStartTime(0), redScore(0), greenScore(0) {
+    
 }
 
 void Scorebox::initialize() {
-    // Initialize pins for ESP32
-    // pinMode(RED_WEAPON_PIN, INPUT_PULLUP);
-    // pinMode(GREEN_WEAPON_PIN, INPUT_PULLUP);
-    // pinMode(RED_LED_PIN, OUTPUT);
-    // pinMode(GREEN_LED_PIN, OUTPUT);
-    // pinMode(BUZZER_PIN, OUTPUT);
-    // pinMode(RESET_BUTTON_PIN, INPUT_PULLUP);
+
+    gpioChecker.initialize();
+    display.initialize();
+    match.initialize();
     
     cout << "Scorebox initialized for Epee mode" << endl;
     reset();
 }
 
 void Scorebox::update() {
-    unsigned long currentTime = chrono::duration_cast<chrono::milliseconds>(
-        chrono::steady_clock::now().time_since_epoch()).count();
+    unsigned long currentTime = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
     
+    
+    gpioChecker.update(currentTime);
+
     //TODO I want to do this check else where
     // // If we're displaying a hit, check if display time is over
     // if (isHitRegistered() && (currentTime - hitStartTime > DISPLAY_TIME)) {
@@ -45,7 +46,7 @@ void Scorebox::update() {
         }
         
         // Check for second hit during lockout
-        if (!redHit && readWeaponPin(RED_WEAPON_PIN)) {
+        if (!redHit && gpioChecker.hitRegistered()) {
             redHit = true;
             redScore++;
             setLED(RED_LED_PIN, true);
@@ -54,7 +55,7 @@ void Scorebox::update() {
             cout << "Red hit during lockout! Score: " << redScore << endl;
         }
         
-        if (!greenHit && readWeaponPin(GREEN_WEAPON_PIN)) {
+        if (!greenHit && gpioChecker.hitRegistered()) {
             greenHit = true;
             greenScore++;
             setLED(GREEN_LED_PIN, true);
@@ -67,8 +68,8 @@ void Scorebox::update() {
     }
     
     // Normal operation - check for first hit
-    if (!isLocked && !isHitRegistered()) {
-        if (readWeaponPin(RED_WEAPON_PIN)) {
+    if (!gpioChecker.isLocked() && !gpioChecker.hitRegistered()) {
+        if (gpioChecker.isRedHit()) {
             redHit = true;
             redScore++;
             setLED(RED_LED_PIN, true);
@@ -78,7 +79,7 @@ void Scorebox::update() {
             isLocked = true;
             cout << "Red hit! Starting lockout. Score: " << redScore << endl;
         }
-        else if (readWeaponPin(GREEN_WEAPON_PIN)) {
+        else if (gpioChecker.isGreenHit()) {
             greenHit = true;
             greenScore++;
             setLED(GREEN_LED_PIN, true);
@@ -108,15 +109,6 @@ void Scorebox::reset() {
 
 void Scorebox::displayScores() {
     cout << "Current Scores - Red: " << redScore << " | Green: " << greenScore << endl;
-}
-
-// Hardware interface methods (mock implementations for testing)
-bool Scorebox::readWeaponPin(int pin) {
-    // Mock implementation - replace with actual ESP32 digitalRead
-    // return digitalRead(pin) == LOW; // Assuming active low
-    
-    // For testing purposes, return false
-    return false;
 }
 
 void Scorebox::setLED(int pin, bool state) {

@@ -7,9 +7,13 @@
 #include <thread>
 #include <map>
 #include <string>
+#include <array>
+// #include <Arduino.h> // Include Arduino library for pin manipulation
 
 using namespace std;
 
+#define DEBOUNCE_TIME 10   // 10ms debounce for weapon detection
+// Pin definitions for ESP32 (adjust as needed)
 enum PinType {
     RED_WEAPON_PIN_A,
     RED_WEAPON_PIN_B,
@@ -46,10 +50,15 @@ class GPIO_Checker {
 
 
         //Getters
-        bool isLocked() const { return locked; }
-        bool hitRegistered() const { return redHit || greenHit; }
+        int* getPinReadings(string RedOrGreen);
         int getPinNumber(PinType pinType);
         int getPinType(int pinNumber);
+
+        bool isLocked() const { return locked; }
+        bool hitRegistered() const { return redHit || greenHit; }
+
+        bool isRedHit() const { return redHit; }
+        bool isGreenHit() const { return greenHit; }
 };
 
 

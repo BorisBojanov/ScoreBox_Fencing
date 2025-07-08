@@ -10,8 +10,14 @@
 #include <chrono>
 #include <thread>
 // #include <Arduino>
+#include <GPIO_Checker.h> // Hardware interface for GPIO pins
+#include <Display.h> // Display interface for showing scores
+#include <Match.h> // Match management for Epee mode
+GPIO_Checker gpioChecker;
+Display display;
+Match match;
 
-// Pin definitions for ESP32 (adjust as needed)
+// Pin definitions for ESP32 (adjuwst as needed)
 #define RED_LED_PIN 18
 #define GREEN_LED_PIN 19
 #define BUZZER_PIN 21
@@ -19,7 +25,6 @@
 
 // Timing constants for Epee (in milliseconds)
 #define LOCKOUT_TIME 40    // 40ms lockout period after first hit
-#define DEBOUNCE_TIME 10   // 10ms debounce for weapon detection
 #define DISPLAY_TIME 3000  // 3 seconds to display hits
 
 using namespace std;
@@ -35,7 +40,7 @@ private:
     int greenScore;
     
     // Hardware interface methods
-    bool readWeaponPin(int pin);
+    // bool readWeaponPin(int pin);
     void setLED(int pin, bool state);
     void setBuzzer(bool state);
     bool readResetButton();
@@ -50,7 +55,6 @@ public:
     // Getters
     int getRedScore() const { return redScore; }
     int getGreenScore() const { return greenScore; }
-    bool isHitRegistered() const { return redHit || greenHit; }
 };
 
 #endif
