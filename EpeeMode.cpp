@@ -27,7 +27,9 @@ check if the 'isLockedOut' is Ture or False,
 
 */
 void EpeeMode::evaluateHit() {
+    int* readings = gpio->getFencerPinReadings();
     groundingCheck(); // Check for grounding first
+    onTargetCheck(readings);
 }
 
 /*
@@ -38,8 +40,6 @@ if Green A, Green B, and Red C are T then Green fencer is grounding
 return to the main logic of the evaluateHit function
 */
 void EpeeMode::groundingCheck(){
-
-    int* readings = gpio->getFencerPinReadings();
     // [RED_WEAPON_PIN_A, RED_WEAPON_PIN_B, RED_WEAPON_PIN_C, redHitStartTime, GREEN_WEAPON_PIN_A, GREEN_WEAPON_PIN_B, GREEN_WEAPON_PIN_C, greenHitStartTime]
     // Check if Red A, Red B, and Green C are all true
     if (readings[0] && readings[1] && readings[6]) {
@@ -55,5 +55,50 @@ void EpeeMode::groundingCheck(){
 
     } else {
         cout << "No grounding detected." << endl;
+    }
+}
+
+void EpeeMode::onTargetCheck(int* readings) {
+    // Check if the scorebox is locked out
+    if (isLockedOut) {
+        cout << "Scorebox is locked out. Ignoring hit." << endl;
+        return;
+    }
+
+    // Check for on-target hits
+    if (readings[0] && readings[1] && readings[6]) { // Red On Target
+        redOnTarget = true;
+        cout << "Red fencer hit on target." << endl;
+        // scorebox->setLED(RED_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
+    } else if (readings[4] && readings[5] && readings[2]) { // Green On Target
+        greenOnTarget = true;
+        cout << "Green fencer hit on target." << endl;
+        // scorebox->setLED(GREEN_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
+    }
+
+}
+
+void EpeeMode::offTargetCheck(int* readings) {
+    // Check for off-target hits
+    if (readings[0] && readings[1] && readings[7]) { // Red Off Target
+        redOffTarget = true;
+        cout << "Red fencer hit off target." << endl;
+        // scorebox->setLED(RED_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
+    } else if (readings[4] && readings[5] && readings[3]) { // Green Off Target
+        greenOffTarget = true;
+        cout << "Green fencer hit off target." << endl;
+        // scorebox->setLED(GREEN_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
     }
 }

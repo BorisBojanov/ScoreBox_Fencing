@@ -24,6 +24,7 @@ private:
     int* HitValues[6] = {0, 0, 0, 0, 0, 0}; // Hit values for Red and Green fencers
     Scorebox* scorebox; // Pointer to the Scorebox for managing scores and hits
     GPIO_Manager* gpio; // Pointer to GPIO checker for reading weapon pins
+    
     int lockoutTimer = 3000; // The time in milliseconds to lock out after a hit
     bool isLockedOut = false; // Flag to indicate if the scorebox is locked out
     bool lockOutTimerStarted = false; // Flag to indicate if the lockout timer has been started and is running
@@ -43,6 +44,10 @@ public:
     EpeeMode(Scorebox* sb);
     void evaluateHit();
     void groundingCheck();
+    void onTargetCheck(int* readings);
+    void offTargetCheck(int* readings);
+    void reset();
+
 };
 
 #endif
