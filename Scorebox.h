@@ -10,18 +10,16 @@
 #include <chrono>
 #include <thread>
 // #include <Arduino>
-#include <GPIO_Checker.h> // Hardware interface for GPIO pins
-#include <Display.h> // Display interface for showing scores
-#include <Match.h> // Match management for Epee mode
-GPIO_Checker gpioChecker;
-Display display;
-Match match;
+// #include <Display.h> // Display interface for showing scores
+// #include <Match.h> // Match management for Epee mode
+// Display display;
+// Match match;
 
 // Pin definitions for ESP32 (adjuwst as needed)
-#define RED_LED_PIN 18
-#define GREEN_LED_PIN 19
-#define BUZZER_PIN 21
-#define RESET_BUTTON_PIN 22
+// #define RED_LED_PIN 18
+// #define GREEN_LED_PIN 19
+// #define BUZZER_PIN 21
+// #define RESET_BUTTON_PIN 22
 
 // Timing constants for Epee (in milliseconds)
 #define LOCKOUT_TIME 40    // 40ms lockout period after first hit
@@ -46,6 +44,16 @@ private:
     bool readResetButton();
     
 public:
+    enum HitType {
+        Red_On_Target,
+        Red_Off_Target,
+        
+        Green_On_Target,
+        Green_Off_Target,
+
+        Red_Grounding_Hit,
+        Green_Grounding_Hit,
+    };
     Scorebox();
     void initialize();
     void update();

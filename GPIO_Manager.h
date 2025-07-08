@@ -1,6 +1,6 @@
 // Checks the GPIO pins state and updates the scorebox
-#ifndef GPIO_CHECKER_H
-#define GPIO_CHECKER_H
+#ifndef GPIO_Manager_H
+#define GPIO_Manager_H
 
 #include <iostream>
 #include <chrono> 
@@ -20,19 +20,28 @@ enum PinType {
     RED_WEAPON_PIN_C,
     GREEN_WEAPON_PIN_A,
     GREEN_WEAPON_PIN_B,
-    GREEN_WEAPON_PIN_C
+    GREEN_WEAPON_PIN_C,
+    RED_LED_PIN,
+    GREEN_LED_PIN,
+    BUZZER_PIN,
+    RESET_BUTTON_PIN
 };
+
+/*
+Array to hold pin readings for both fencers
+Assuming 3 pins for each weapon and 2 timestamps
+[]
+*/
+static int readings[8]; 
+
 
 // Timing constants for Epee (in milliseconds)
 #define LOCKOUT_TIME 40    // 40ms lockout period after first hit
 #define DEBOUNCE_TIME 10   // 10ms debounce for weapon detection
 
-class GPIO_Checker {
+class GPIO_Manager {
     private:
         int pinNumbers[6] = {2,3,4,5,6,7}; // Array to hold pin numbers for red and green weapons
-        bool locked;
-        bool redHit;
-        bool greenHit;
         unsigned long redHitStartTime;
         unsigned long greenHitStartTime;
         unsigned long lockoutStartTime;
@@ -42,25 +51,21 @@ class GPIO_Checker {
         bool resetPins();
 
     public:
-        GPIO_Checker();
+        GPIO_Manager();
         void initialize();
         void update(unsigned long currentTimeNow);
         void reset();
         void setPinNumber(PinType pinType, int newPinNumber);
-
+        void setPinValue(PinType pinType, int value);
 
         //Getters
-        int* getPinReadings(string RedOrGreen);
+        int* getFencerPinReadings();
         int getPinNumber(PinType pinType);
         int getPinType(int pinNumber);
 
-        bool isLocked() const;
-        bool hitRegistered() const;
 
-        bool isRedHit() const { return redHit; }
-        bool isGreenHit() const { return greenHit; }
 };
 
 
 
-#endif // GPIO_CHECKER_H
+#endif // GPIO_Manager_H

@@ -10,86 +10,18 @@ Scorebox::Scorebox() : isLocked(false), redHit(false), greenHit(false),
 }
 
 void Scorebox::initialize() {
-
-    gpioChecker.initialize();
-    display.initialize();
-    match.initialize();
+    // Initialize stuff
+    // gpioChecker.initialize();
+    // display.initialize();
+    // match.initialize();
     
     cout << "Scorebox initialized for Epee mode" << endl;
     reset();
 }
 
 void Scorebox::update() {
+    // Centrilized method for updating the scorebox state 
     unsigned long currentTime = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
-    
-    
-    gpioChecker.update(currentTime);
-
-    //TODO I want to do this check else where
-    // // If we're displaying a hit, check if display time is over
-    // if (isHitRegistered() && (currentTime - hitStartTime > DISPLAY_TIME)) {
-    //     // Turn off LEDs and buzzer
-    //     setLED(RED_LED_PIN, false);
-    //     setLED(GREEN_LED_PIN, false);
-    //     setBuzzer(false);
-    //     redHit = false;
-    //     greenHit = false;
-    //     isLocked = false;
-    //     return;
-    // }
-    
-    // If we're in lockout period, check for second hit
-    if (isLocked && (!greenHit || !redHit)) {
-        if (currentTime - lockoutStartTime > LOCKOUT_TIME) {
-            isLocked = false; // Lockout period ended
-            return;
-        }
-        
-        // Check for second hit during lockout
-        if (!redHit && gpioChecker.hitRegistered()) {
-            redHit = true;
-            redScore++;
-            setLED(RED_LED_PIN, true);
-            setBuzzer(true);
-            hitStartTime = currentTime;
-            cout << "Red hit during lockout! Score: " << redScore << endl;
-        }
-        
-        if (!greenHit && gpioChecker.hitRegistered()) {
-            greenHit = true;
-            greenScore++;
-            setLED(GREEN_LED_PIN, true);
-            setBuzzer(true);
-            hitStartTime = currentTime;
-            cout << "Green hit during lockout! Score: " << greenScore << endl;
-        }
-        
-        return;
-    }
-    
-    // Normal operation - check for first hit
-    if (!gpioChecker.isLocked() && !gpioChecker.hitRegistered()) {
-        if (gpioChecker.isRedHit()) {
-            redHit = true;
-            redScore++;
-            setLED(RED_LED_PIN, true);
-            setBuzzer(true);
-            hitStartTime = currentTime;
-            lockoutStartTime = currentTime;
-            isLocked = true;
-            cout << "Red hit! Starting lockout. Score: " << redScore << endl;
-        }
-        else if (gpioChecker.isGreenHit()) {
-            greenHit = true;
-            greenScore++;
-            setLED(GREEN_LED_PIN, true);
-            setBuzzer(true);
-            hitStartTime = currentTime;
-            lockoutStartTime = currentTime;
-            isLocked = true;
-            cout << "Green hit! Starting lockout. Score: " << greenScore << endl;
-        }
-    }
 }
 
 void Scorebox::reset() {
