@@ -84,22 +84,12 @@ void GPIO_Checker::reset() {
     cout << "GPIO Checker reset." << endl;
 }
 
-void GPIO_Checker::setPinNumber(PinType pinType, int newPinNumber){
-    pinNumbers[pinType] = newPinNumber;
+bool GPIO_Checker::isLocked() const { 
+    return locked; 
 }
 
-int GPIO_Checker::getPinNumber(PinType pinType){
-    return pinNumbers[pinType];
-}
-
-int GPIO_Checker::getPinType(int pinNumber){
-    for (int i = 0; i < 6; i++) {
-        if (pinNumbers[i] == pinNumber) {
-            return static_cast<PinType>(i); // Return the index as the PinType
-        }
-    }
-    // if not found, throw an exception
-    throw std::invalid_argument("Pin number not found in pinNumbers array.");
+bool GPIO_Checker::hitRegistered() const{ 
+    return redHit || greenHit; 
 }
 
 // Get the pin readings for the fencer side (Red or Green).
@@ -121,4 +111,22 @@ int* GPIO_Checker::getPinReadings(string RedOrGreen) {
         throw std::invalid_argument("Invalid weapon type specified.");
     }
     return readings;
+}
+
+void GPIO_Checker::setPinNumber(PinType pinType, int newPinNumber){
+    pinNumbers[pinType] = newPinNumber;
+}
+
+int GPIO_Checker::getPinNumber(PinType pinType){
+    return pinNumbers[pinType];
+}
+
+int GPIO_Checker::getPinType(int pinNumber){
+    for (int i = 0; i < 6; i++) {
+        if (pinNumbers[i] == pinNumber) {
+            return static_cast<PinType>(i); // Return the index as the PinType
+        }
+    }
+    // if not found, throw an exception
+    throw std::invalid_argument("Pin number not found in pinNumbers array.");
 }

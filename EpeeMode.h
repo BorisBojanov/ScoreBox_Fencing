@@ -8,7 +8,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
-#include "Scorebox.h"
+#include <Scorebox.h>
 
 using namespace std;
 // EpeeMode class definition
@@ -19,19 +19,15 @@ using namespace std;
 class EpeeMode {
 private:
     Scorebox* scorebox;
-    int targetScore;        // Points needed to win (typically 15)
-    int maxTime;           // Maximum bout time in seconds
-    unsigned long boutStartTime;
-    bool boutActive;
-    
+    int lockoutTime = 3000; // The time in milliseconds to lock out after a hit
+    bool isLocked = false;
+    bool redHit = false;
+    bool greenHit = false;
+
 public:
     EpeeMode(Scorebox* sb);
-    void startBout();
-    void endBout();
-    bool checkWinCondition();
-    void displayBoutStatus();
-    int getTimeRemaining();
-    void resetScores();
+    void evaluateHit();
+    void groundingCheck();
 };
 
 #endif

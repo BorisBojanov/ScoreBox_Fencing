@@ -54,8 +54,8 @@ class GPIO_Checker {
         int getPinNumber(PinType pinType);
         int getPinType(int pinNumber);
 
-        bool isLocked() const { return locked; }
-        bool hitRegistered() const { return redHit || greenHit; }
+        bool isLocked() const;
+        bool hitRegistered() const;
 
         bool isRedHit() const { return redHit; }
         bool isGreenHit() const { return greenHit; }
