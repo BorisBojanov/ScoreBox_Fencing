@@ -4,7 +4,6 @@
 
 
 EpeeMode::EpeeMode(Scorebox* sb) : scorebox(sb)  {
-
 }
 
 /*
@@ -16,22 +15,21 @@ Check for grounding
 check if the 'isLockedOut' is Ture or False,
     True: Then ignore the hit and return
     False: Then check if the hit is On_Target or Off_Target
+        Off_Target: if true, then signal the hit to the scorebox and set the 'locked_out' state to True
+            Check if the lock out timer has previously been started
+                TRUE: IF lock out timer has been started, then return off target hit
+                False If lock out timer has not been started, then start the lock out timer and return off target hit
 
-    Off_Target: if true, then signal the hit to the scorebox and set the 'locked_out' state to True
-        Check if the lock out timer has previously been started
-            TRUE: IF lock out timer has been started, then return off target hit
-            False If lock out timer has not been started, then start the lock out timer and return off target hit
-
-    On_Target: if true, then check if the lock out timer is active
-        Check if the lock out timer has previously been started
-            True: if lock out timer has been started, then return on target hit
-            False: if lock out timer has not been started, then start the lock out timer and return on target hit
+        On_Target: if true, then check if the lock out timer is active
+            Check if the lock out timer has previously been started
+                True: if lock out timer has been started, then return on target hit
+                False: if lock out timer has not been started, then start the lock out timer and return on target hit
 
 */
 void EpeeMode::evaluateHit() {
+    int* readings = gpio->getFencerPinReadings();
     groundingCheck(); // Check for grounding first
-
-
+    onTargetCheck(readings);
 }
 
 /*
@@ -42,16 +40,15 @@ if Green A, Green B, and Red C are T then Green fencer is grounding
 return to the main logic of the evaluateHit function
 */
 void EpeeMode::groundingCheck(){
-    int* readings = gpio->getFencerPinReadings();
-    // [  RED_FENCER_PIN_A, RED_FENCER_PIN_B, RED_FENCER_PIN_C, redHitStartTime, GREEN_FENCER_PIN_A, GREEN_FENCER_PIN_B, GREEN_FENCER_PIN_C, greenHitStartTime ]
-    // Check if Red B, Red C, and Green A are all true
-    if (readings[1] && readings[2] && readings[4]) {
+    // [RED_WEAPON_PIN_A, RED_WEAPON_PIN_B, RED_WEAPON_PIN_C, redHitStartTime, GREEN_WEAPON_PIN_A, GREEN_WEAPON_PIN_B, GREEN_WEAPON_PIN_C, greenHitStartTime]
+    // Check if Red A, Red B, and Green C are all true
+    if (readings[0] && readings[1] && readings[6]) {
         cout << "Red fencer is grounding." << endl;
         redGrounding = true;
         //TODO Implement grounding logic here
 
-    // Check if Green B, Green C, and Red A are all true
-    } else if (readings[4] && readings[6] && readings[0]) {
+    // Check if Green A, Green B, and Red C are all true
+    } else if (readings[4] && readings[5] && readings[2]) {
         cout << "Green fencer is grounding." << endl;
         greenGrounding = true;
         //TODO Implement grounding logic here
@@ -61,21 +58,47 @@ void EpeeMode::groundingCheck(){
     }
 }
 
-void EpeeMode::onTargetCheck() {
-    int* readings = gpio->getFencerPinReadings();
-    // Check if Red B, Red C are ture
-    if (redings[1] && readings[2]) {
-        cout << "Red fencer hit on target." << endl;
-        redOnTarget = true;
-        //TODO Implement on target logic here
-    }
-    // Check if Green B, Green C are ture
-    else if (readings[4] && readings[5]) {
-        cout << "Green fencer hit on target." << endl;
-        greenOnTarget = true;
-        //TODO Implement on target logic here
-    } else {
-        cout << "No on target hit detected." << endl;
+void EpeeMode::onTargetCheck(int* readings) {
+    // Check if the scorebox is locked out
+    if (isLockedOut) {
+        cout << "Scorebox is locked out. Ignoring hit." << endl;
+        return;
     }
 
+    // Check for on-target hits
+    if (readings[0] && readings[1] && readings[6]) { // Red On Target
+        redOnTarget = true;
+        cout << "Red fencer hit on target." << endl;
+        // scorebox->setLED(RED_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
+    } else if (readings[4] && readings[5] && readings[2]) { // Green On Target
+        greenOnTarget = true;
+        cout << "Green fencer hit on target." << endl;
+        // scorebox->setLED(GREEN_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
+    }
+
+}
+
+void EpeeMode::offTargetCheck(int* readings) {
+    // Check for off-target hits
+    if (readings[0] && readings[1] && readings[7]) { // Red Off Target
+        redOffTarget = true;
+        cout << "Red fencer hit off target." << endl;
+        // scorebox->setLED(RED_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
+    } else if (readings[4] && readings[5] && readings[3]) { // Green Off Target
+        greenOffTarget = true;
+        cout << "Green fencer hit off target." << endl;
+        // scorebox->setLED(GREEN_LED_PIN, true);
+        // scorebox->setBuzzer(true);
+        // scorebox->update();
+        return;
+    }
 }

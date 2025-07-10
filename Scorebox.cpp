@@ -32,8 +32,7 @@ void Scorebox::reset() {
     lockoutStartTime = 0;
     
     // Turn off all indicators
-    setLED(RED_LED_PIN, false);
-    setLED(GREEN_LED_PIN, false);
+
     setBuzzer(false);
     
     cout << "Scorebox reset - Ready for next action" << endl;
@@ -43,13 +42,13 @@ void Scorebox::displayScores() {
     cout << "Current Scores - Red: " << redScore << " | Green: " << greenScore << endl;
 }
 
-void Scorebox::setLED(int pin, bool state) {
-    // Mock implementation - replace with actual ESP32 digitalWrite
-    // digitalWrite(pin, state ? HIGH : LOW);
+// void Scorebox::setLED(int pin, bool state) {
+//     // Mock implementation - replace with actual ESP32 digitalWrite
+//     // digitalWrite(pin, state ? HIGH : LOW);
     
-    string ledName = (pin == RED_LED_PIN) ? "RED" : "GREEN";
-    cout << ledName << " LED: " << (state ? "ON" : "OFF") << endl;
-}
+//     string ledName = (pin == RED_LED_PIN) ? "RED" : "GREEN";
+//     cout << ledName << " LED: " << (state ? "ON" : "OFF") << endl;
+// }
 
 void Scorebox::setBuzzer(bool state) {
     // Mock implementation - replace with actual ESP32 digitalWrite
