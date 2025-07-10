@@ -7,6 +7,7 @@ Change the GPIO pin numbers to match your hardware setup.
 */
 #include "GPIO_Manager.h"
 GPIO_Manager::GPIO_Manager() : redHitStartTime(0), greenHitStartTime(0), lockoutStartTime(0) {
+    initialize();
 }
 
 bool GPIO_Manager::readWeaponPins(int pinA, int pinB, int pinC){
@@ -26,12 +27,12 @@ void GPIO_Manager::initialize(){
     // pinMode(GREEN_LED_PIN, OUTPUT);
     // pinMode(BUZZER_PIN, OUTPUT);
     // pinMode(RESET_BUTTON_PIN, INPUT_PULLUP);
-    setPinNumber(RED_WEAPON_PIN_A, 2);
-    setPinNumber(RED_WEAPON_PIN_B, 3);
-    setPinNumber(RED_WEAPON_PIN_C, 4);
-    setPinNumber(GREEN_WEAPON_PIN_A, 5);
-    setPinNumber(GREEN_WEAPON_PIN_B, 6);
-    setPinNumber(GREEN_WEAPON_PIN_C, 7);
+    setPinNumber(RED_FENCER_PIN_A, 2);
+    setPinNumber(RED_FENCER_PIN_B, 3);
+    setPinNumber(RED_FENCER_PIN_C, 4);
+    setPinNumber(GREEN_FENCER_PIN_A, 5);
+    setPinNumber(GREEN_FENCER_PIN_B, 6);
+    setPinNumber(GREEN_FENCER_PIN_C, 7);
     setPinNumber(RED_LED_PIN, 8);
     setPinNumber(GREEN_LED_PIN, 9);
     setPinNumber(BUZZER_PIN, 10);
@@ -62,13 +63,13 @@ Returns an array of pin readings index 0-3 contains red weapon readings, index 4
 */
 int* GPIO_Manager::getFencerPinReadings() {
     // readings arrray defined in the header file
-        readings[0] = pinNumbers[RED_WEAPON_PIN_A];
-        readings[1] = pinNumbers[RED_WEAPON_PIN_B];
-        readings[2] = pinNumbers[RED_WEAPON_PIN_C];
+        readings[0] = pinNumbers[RED_FENCER_PIN_A];
+        readings[1] = pinNumbers[RED_FENCER_PIN_B];
+        readings[2] = pinNumbers[RED_FENCER_PIN_C];
         readings[3] = redHitStartTime; // Include the time of the hit
-        readings[4] = pinNumbers[GREEN_WEAPON_PIN_A];
-        readings[5] = pinNumbers[GREEN_WEAPON_PIN_B];
-        readings[6] = pinNumbers[GREEN_WEAPON_PIN_C];
+        readings[4] = pinNumbers[GREEN_FENCER_PIN_A];
+        readings[5] = pinNumbers[GREEN_FENCER_PIN_B];
+        readings[6] = pinNumbers[GREEN_FENCER_PIN_C];
         readings[7] = greenHitStartTime; // Include the time of the hit
     return readings;
 }

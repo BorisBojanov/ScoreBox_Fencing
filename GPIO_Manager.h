@@ -15,12 +15,12 @@ using namespace std;
 #define DEBOUNCE_TIME 10   // 10ms debounce for weapon detection
 // Pin definitions for ESP32 (adjust as needed)
 enum PinType {
-    RED_WEAPON_PIN_A,
-    RED_WEAPON_PIN_B,
-    RED_WEAPON_PIN_C,
-    GREEN_WEAPON_PIN_A,
-    GREEN_WEAPON_PIN_B,
-    GREEN_WEAPON_PIN_C,
+    RED_FENCER_PIN_A,
+    RED_FENCER_PIN_B,
+    RED_FENCER_PIN_C,
+    GREEN_FENCER_PIN_A,
+    GREEN_FENCER_PIN_B,
+    GREEN_FENCER_PIN_C,
     RED_LED_PIN,
     GREEN_LED_PIN,
     BUZZER_PIN,

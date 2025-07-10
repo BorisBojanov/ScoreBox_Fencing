@@ -43,6 +43,7 @@ public:
     EpeeMode(Scorebox* sb);
     void evaluateHit();
     void groundingCheck();
+    void onTargetCheck();
 };
 
 #endif
